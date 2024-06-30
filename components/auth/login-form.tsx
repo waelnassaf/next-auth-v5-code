@@ -35,12 +35,12 @@ export const LoginForm = () => {
                     </div>
                     <input
                         type="text"
-                        className="input input-bordered w-full"
+                        className={`input input-bordered w-full ${errors.email && "input-error"}`}
                         placeholder="Type Your Email"
                         {...register("email")}
                     />
                     {errors?.email?.message && (
-                        <p className="text-red-700 mb-4">
+                        <p className="text-red-700 mt-2 text-sm">
                             {errors.email.message}
                         </p>
                     )}
@@ -51,16 +51,16 @@ export const LoginForm = () => {
                     </div>
                     <input
                         type="password"
-                        className="input input-bordered w-full"
+                        className={`input input-bordered w-full ${errors.email && "input-error"}`}
                         placeholder="Type Your Password"
                         {...register("password")}
                     />
+                    {errors?.password?.message && (
+                        <p className="text-red-700 mt-2 text-sm">
+                            {errors.password.message}
+                        </p>
+                    )}
                 </label>
-                {errors?.password?.message && (
-                    <p className="text-red-700 mb-4">
-                        {errors.password.message}
-                    </p>
-                )}
 
                 <FormError message="" />
                 <FormSuccess message="" />
