@@ -10,7 +10,7 @@ export default function Home() {
         >
             <div className="space-y-6 text-white text-center">
                 <h1 className="text-6xl semi-bold drop-shadow-md">🔐 Auth</h1>
-                <p className="text-lg">A simple auth service</p>
+                <p className="text-lg">A simple auth service.</p>
                 <div>
                     <LoginButton>
                         <button className="btn btn-neutral">Sign In</button>
