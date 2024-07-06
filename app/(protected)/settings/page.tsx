@@ -4,7 +4,11 @@ const SettingsPage = async () => {
     const session = await auth()
     return (
         <>
-            <div>{JSON.stringify(session)}</div>
+            <div>
+                {JSON.stringify(session)}
+
+                {session?.user.role}
+            </div>
             <form
                 action={async () => {
                     "use server"
