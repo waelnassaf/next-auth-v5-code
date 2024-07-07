@@ -10,6 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { loginUser } from "@/server/auth"
 import { useState, useTransition } from "react"
 import { useSearchParams } from "next/navigation"
+import Link from "next/link"
 export const LoginForm = () => {
     const [isPending, startTransition] = useTransition()
     const [success, setSuccess] = useState<string | undefined>("")
@@ -86,6 +87,12 @@ export const LoginForm = () => {
                         </p>
                     )}
                 </label>
+                <Link
+                    href="/auth/reset"
+                    className="text-sm text-gray-500 hover:text-blue-500 hover:underline"
+                >
+                    Forgot your password?
+                </Link>
 
                 <FormError message={error || urlError} />
                 <FormSuccess message={success} />
