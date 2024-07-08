@@ -14,6 +14,7 @@ import Link from "next/link"
 export const LoginForm = () => {
     const [isPending, startTransition] = useTransition()
     const [success, setSuccess] = useState<string | undefined>("")
+    const [showTwoFactor, setShowTwoFactor] = useState(false)
     const [error, setError] = useState<string | undefined>("")
     const searchParams = useSearchParams()
     const callbackUrl = searchParams.get("callbackUrl")
@@ -26,6 +27,7 @@ export const LoginForm = () => {
         register,
         handleSubmit,
         formState: { errors },
+        reset,
     } = useForm<z.infer<typeof LoginSchema>>({
         resolver: zodResolver(LoginSchema),
         defaultValues: {
@@ -37,11 +39,25 @@ export const LoginForm = () => {
     const onSubmit = (values: z.infer<typeof LoginSchema>) => {
         setError("")
         setSuccess("")
+
         startTransition(() => {
-            loginUser(values).then((data) => {
-                setError(data?.error)
-                setSuccess(data?.success)
-            })
+            loginUser(values)
+                .then((data) => {
+                    if (data?.error) {
+                        reset()
+                        setError(data?.error)
+                    }
+
+                    if (data?.success) {
+                        reset()
+                        setSuccess(data?.success)
+                    }
+
+                    if (data?.twoFactor) {
+                        setShowTwoFactor(true)
+                    }
+                })
+                .catch(() => setError("Something went wrong!"))
         })
     }
 
@@ -53,40 +69,64 @@ export const LoginForm = () => {
             showSocial={true}
         >
             <form className="space-y-4 mb-5" onSubmit={handleSubmit(onSubmit)}>
-                <label className="form-control w-full">
-                    <div className="label">
-                        <span className="label-text"> Email</span>
-                    </div>
-                    <input
-                        type="text"
-                        className={`input input-bordered w-full ${errors.email && "input-error"}`}
-                        placeholder="Type Your Email"
-                        {...register("email")}
-                        disabled={isPending}
-                    />
-                    {errors?.email?.message && (
-                        <p className="text-red-700 mt-2 text-sm">
-                            {errors.email.message}
-                        </p>
-                    )}
-                </label>
-                <label className="form-control w-full">
-                    <div className="label">
-                        <span className="label-text">Password</span>
-                    </div>
-                    <input
-                        type="password"
-                        className={`input input-bordered w-full ${errors.password && "input-error"}`}
-                        placeholder="Type Your Password"
-                        {...register("password")}
-                        disabled={isPending}
-                    />
-                    {errors?.password?.message && (
-                        <p className="text-red-700 mt-2 text-sm">
-                            {errors.password.message}
-                        </p>
-                    )}
-                </label>
+                {showTwoFactor && (
+                    <label className="form-control w-full">
+                        <div className="label">
+                            <span className="label-text">Two Factor Code</span>
+                        </div>
+                        <input
+                            type="text"
+                            className={`input input-bordered w-full ${errors.code && "input-error"}`}
+                            placeholder="123456"
+                            {...register("code")}
+                            disabled={isPending}
+                        />
+                        {errors?.code?.message && (
+                            <p className="text-red-700 mt-2 text-sm">
+                                {errors.code.message}
+                            </p>
+                        )}
+                    </label>
+                )}
+                {!showTwoFactor && (
+                    <>
+                        <label className="form-control w-full">
+                            <div className="label">
+                                <span className="label-text"> Email</span>
+                            </div>
+                            <input
+                                type="text"
+                                className={`input input-bordered w-full ${errors.email && "input-error"}`}
+                                placeholder="Type Your Email"
+                                {...register("email")}
+                                disabled={isPending}
+                            />
+                            {errors?.email?.message && (
+                                <p className="text-red-700 mt-2 text-sm">
+                                    {errors.email.message}
+                                </p>
+                            )}
+                        </label>
+                        <label className="form-control w-full">
+                            <div className="label">
+                                <span className="label-text">Password</span>
+                            </div>
+                            <input
+                                type="password"
+                                className={`input input-bordered w-full ${errors.password && "input-error"}`}
+                                placeholder="Type Your Password"
+                                {...register("password")}
+                                disabled={isPending}
+                            />
+                            {errors?.password?.message && (
+                                <p className="text-red-700 mt-2 text-sm">
+                                    {errors.password.message}
+                                </p>
+                            )}
+                        </label>
+                    </>
+                )}
+
                 <Link
                     href="/auth/reset"
                     className="text-sm text-gray-500 hover:text-blue-500 hover:underline"
@@ -101,7 +141,7 @@ export const LoginForm = () => {
                     disabled={isPending}
                     type="submit"
                 >
-                    Login
+                    {showTwoFactor ? "Confirm" : "Login"}
                 </button>
             </form>
         </CardWrapper>
