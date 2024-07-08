@@ -12,6 +12,7 @@ import { generateVerificationToken, generateTwoFactorToken } from "@/lib/tokens"
 import { sendVerificationEmail, sendTwoFactorTokenEmail } from "@/lib/mail"
 import { getTwoFactorTokenByEmail } from "@/data/two-factor-token"
 import { getTwoFactorConfirmationByUserId } from "@/data/two-factor-confirmation"
+import { signOut } from "@/auth"
 
 export const loginUser = async (values: z.infer<typeof LoginSchema>) => {
     const validatedFields = LoginSchema.safeParse(values)
@@ -145,4 +146,9 @@ export const createUser = async (values: z.infer<typeof RegisterSchema>) => {
         verificationToken.token
     )
     return { success: "Success! Confirmation Email Sent" }
+}
+
+export const logoutUser = async () => {
+    // some server stuff
+    await signOut()
 }
