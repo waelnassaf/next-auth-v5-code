@@ -41,7 +41,7 @@ export const LoginForm = () => {
         setSuccess("")
 
         startTransition(() => {
-            loginUser(values)
+            loginUser(values, callbackUrl)
                 .then((data) => {
                     if (data?.error) {
                         reset()

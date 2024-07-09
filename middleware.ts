@@ -25,9 +25,17 @@ export default auth((req): any => {
         return null
     }
     if (!isLoggedIIn && !isPublicRoute) {
-        return Response.redirect(new URL("/auth/login", nextUrl))
-    }
-    //Returning null means allow this, don't do anything if this happens
+        let callbackUrl = nextUrl.pathname
+        if (nextUrl.search) {
+            callbackUrl += nextUrl.search
+        }
+
+        const encodedCallbackUrl = encodeURIComponent(callbackUrl)
+
+        return Response.redirect(
+            new URL(`/auth/login?callbackUrl=${encodedCallbackUrl}`, nextUrl)
+        )
+    } //Returning null means allow this, don't do anything if this happens
     return null
 })
 

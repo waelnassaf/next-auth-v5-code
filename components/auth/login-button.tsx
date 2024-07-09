@@ -2,6 +2,7 @@
 
 import React from "react"
 import { useRouter } from "next/navigation"
+import { LoginForm } from "@/components/auth/login-form"
 
 interface LoginButtonProps {
     children: React.ReactNode
@@ -20,7 +21,35 @@ export const LoginButton = ({
     }
 
     if (mode === "modal") {
-        return <span>TODO:: Implement Modal</span>
+        return (
+            <>
+                <label
+                    onClick={() => {
+                        if (document) {
+                            ;(
+                                document.getElementById(
+                                    "my_modal_1"
+                                ) as HTMLFormElement
+                            ).showModal()
+                        }
+                    }}
+                >
+                    {children}
+                </label>
+                <dialog id="my_modal_1" className="modal">
+                    <div className="modal-box">
+                        <h3 className="font-bold text-lg">Hello!</h3>
+                        <LoginForm />
+                        <div className="modal-action">
+                            <form method="dialog">
+                                {/* if there is a button in form, it will close the modal */}
+                                <button className="btn">Close</button>
+                            </form>
+                        </div>
+                    </div>
+                </dialog>
+            </>
+        )
     }
 
     return (

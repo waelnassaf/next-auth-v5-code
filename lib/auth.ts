@@ -1,3 +1,6 @@
+//Server Methods for server components and api routes
+//For clients one visit /hooks
+
 import { auth } from "@/auth"
 
 export const currentUser = async () => {
